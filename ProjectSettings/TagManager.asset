@@ -8,6 +8,7 @@ TagManager:
   - ColisorInimigo
   - Inimigo
   - Casco
+  - Moeda
   layers:
   - Default
   - TransparentFX
