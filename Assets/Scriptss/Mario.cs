@@ -15,6 +15,7 @@ public class Mario : MonoBehaviour {
     private bool nochao = false;
 
     public GameObject Casco;
+    public GameObject Foguinho;
 	
 	void Start () {
         //Recebe o componete de Fisica
@@ -30,6 +31,8 @@ public class Mario : MonoBehaviour {
         Andar();
         Pular();
         Chao();
+        Foguear();
+        
 
     }
     void Pular()
@@ -89,6 +92,22 @@ public class Mario : MonoBehaviour {
     }
 
 
+    void Foguear()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            GameObject fogo = Instantiate(Foguinho, transform.position, Quaternion.identity);
+            Destroy(fogo, 2f);
+            if (velocidade < 0)
+            {
+                fogo.GetComponent<Rigidbody2D>().velocity = new Vector2(-5, 0);
+            }else
+            {
+                fogo.GetComponent<Rigidbody2D>().velocity = new Vector2(5, 0);
+            }
+            
+        }
+    }
 
 
 
@@ -129,12 +148,13 @@ public class Mario : MonoBehaviour {
                 }
                 if (hit.collider.tag == "Chao")
                 {
-                    
-                   
-                    
+
+
                     nochao = false;
-                    //Animar.SetBool("Pulo", false);
                     
+                    //forcapulo = 0;
+                    //Animar.SetBool("Pulo", false);
+
                 }
                 if (hit.collider.tag == "Casco")
                 {
@@ -158,9 +178,23 @@ public class Mario : MonoBehaviour {
     }
 
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "checkpoint1")
+        {
+            PlayerPrefs.SetString("checkpoint", "checkpoint1");
+            Debug.Log("CHEGOUSUHSUHDUHS");
+        }
 
+        if (col.gameObject.tag == "bandeirafinal")
+        {
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControl>().NovaFase();
 
-    void OnCollisionEnter2D(Collision2D col)
+        }
+
+    }
+
+        void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "Chao")
         {
@@ -185,6 +219,7 @@ public class Mario : MonoBehaviour {
             GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControl>().Pontuar(1);
 
         }
+       
 
     }
 }

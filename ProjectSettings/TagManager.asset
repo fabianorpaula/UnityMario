@@ -9,6 +9,9 @@ TagManager:
   - Inimigo
   - Casco
   - Moeda
+  - fogo
+  - checkpoint1
+  - bandeirafinal
   layers:
   - Default
   - TransparentFX
@@ -24,7 +27,7 @@ TagManager:
   - colisorinimigo
   - chao
   - casco
-  - 
+  - fogo
   - 
   - 
   - 
