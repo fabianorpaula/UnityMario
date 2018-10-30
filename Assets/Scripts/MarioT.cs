@@ -12,6 +12,7 @@ public class MarioT : MonoBehaviour {
     public float acel = -1;
     public float forcapulo = 0;
     private bool nochao = false;
+    private float marioR = 3;
 
     public GameObject Casco;
 
@@ -30,7 +31,7 @@ public class MarioT : MonoBehaviour {
         //Chama a função de andar
         Andar();
         Pular();
-        //Chao();
+        Chao();
 
     }
     void Pular()
@@ -40,7 +41,7 @@ public class MarioT : MonoBehaviour {
             if (nochao == false)
             {
 
-                forcapulo = 3;
+                forcapulo = 9;
                 nochao = true;
 
                 Animar.SetBool("Pulo", true);
@@ -68,7 +69,7 @@ public class MarioT : MonoBehaviour {
 
 
         velocidade = Input.GetAxis("Horizontal");
-        Corpo.velocity = new Vector2(velocidade * 2, forcapulo);
+        Corpo.velocity = new Vector2(velocidade * 3, forcapulo);
 
         if (velocidade != 0)
         {
@@ -100,13 +101,14 @@ public class MarioT : MonoBehaviour {
     void Chao()
     {
 
+        float marioRC = 2.6f;
         int layerMask = 1 << 12; // Layers utilizadas
         ///O Ponto de Saida
-        float rodax = -0.035f; //essa variavel ajuda a rodar os pontos do pé
+        float rodax = -0.04f* marioRC; //essa variavel ajuda a rodar os pontos do pé
         float px = 0; //ponto de origem X
         float py = this.transform.position.y; // ponto de origem Y
 
-        while (rodax < 0.035f)
+        while (rodax <= (0.041f* marioRC))
         {
             //lança raios no chão
             RaycastHit2D hit = new RaycastHit2D();
@@ -114,10 +116,10 @@ public class MarioT : MonoBehaviour {
             px = this.transform.position.x + rodax;
             //receber colisão
             //recebe colisão - ponto inicial - direcção - distancia - camada
-            hit = Physics2D.Raycast(new Vector2(px + rodax, py), Vector3.down, 0.17f, layerMask);
-            Debug.DrawLine(new Vector3(px + rodax, py, 0), new Vector3(px + rodax, py - 0.17f, 0), Color.red);
+            hit = Physics2D.Raycast(new Vector2(px + rodax, py), Vector3.down, 0.17f* marioRC, layerMask);
+            Debug.DrawLine(new Vector3(px + rodax, py, 0), new Vector3(px + rodax, py - (0.17f* marioRC), 0), Color.red);
             //incrementa
-            rodax = rodax + 0.004f;
+            rodax = rodax + 0.03f;
             //Retorna se encontrou algo
             if (hit == true)
             {
@@ -137,6 +139,11 @@ public class MarioT : MonoBehaviour {
 
 
                     nochao = false;
+                    if(forcapulo < 0)
+                    {
+                        forcapulo = 0;
+                    }
+                    //forcapulo = 0;
                     //Animar.SetBool("Pulo", false);
 
                 }
@@ -166,14 +173,14 @@ public class MarioT : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Chao")
+        /*if (col.gameObject.tag == "Chao")
         {
             if (nochao == true)
             {
                 nochao = false;
                 forcapulo = 0;
             }
-        }
+        }*/
 
         if (col.gameObject.tag == "Inimigo")
         {

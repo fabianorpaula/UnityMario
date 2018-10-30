@@ -8,6 +8,7 @@ public class CameraControl : MonoBehaviour {
     private Camera Principal;
     private GameObject Jogador;
     public float velcamm = 0.01f;
+    
 
 	// Use this for initialization
 	void Start () {

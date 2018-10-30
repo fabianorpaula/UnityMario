@@ -15,6 +15,7 @@ public class Mario : MonoBehaviour {
     private bool nochao = false;
 
     public GameObject Casco;
+    public GameObject Foguinho;
 	
 	void Start () {
         //Recebe o componete de Fisica
@@ -30,6 +31,8 @@ public class Mario : MonoBehaviour {
         Andar();
         Pular();
         Chao();
+        Foguear();
+        
 
     }
     void Pular()
@@ -38,7 +41,7 @@ public class Mario : MonoBehaviour {
             if (nochao == false)
             {
                 
-                forcapulo = 3;
+                forcapulo = 9;
                 nochao = true;
                
                 Animar.SetBool("Pulo", true);
@@ -66,7 +69,7 @@ public class Mario : MonoBehaviour {
 
 
         velocidade = Input.GetAxis("Horizontal");
-        Corpo.velocity = new Vector2(velocidade * 2, forcapulo);
+        Corpo.velocity = new Vector2(velocidade * 4, forcapulo);
 
         if (velocidade != 0)
         {
@@ -89,6 +92,22 @@ public class Mario : MonoBehaviour {
     }
 
 
+    void Foguear()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            GameObject fogo = Instantiate(Foguinho, transform.position, Quaternion.identity);
+            Destroy(fogo, 2f);
+            if (velocidade < 0)
+            {
+                fogo.GetComponent<Rigidbody2D>().velocity = new Vector2(-5, 0);
+            }else
+            {
+                fogo.GetComponent<Rigidbody2D>().velocity = new Vector2(5, 0);
+            }
+            
+        }
+    }
 
 
 
@@ -98,11 +117,11 @@ public class Mario : MonoBehaviour {
 
         int layerMask = 1 << 12; // Layers utilizadas
         ///O Ponto de Saida
-        float rodax = -0.035f; //essa variavel ajuda a rodar os pontos do pé
+        float rodax = -0.08f; //essa variavel ajuda a rodar os pontos do pé
         float px = 0; //ponto de origem X
-        float py = this.transform.position.y; // ponto de origem Y
+        float py = this.transform.position.y - 0.2f; // ponto de origem Y
 
-        while (rodax < 0.035f)
+        while (rodax < 0.081f)
         {
             //lança raios no chão
             RaycastHit2D hit = new RaycastHit2D();
@@ -113,7 +132,7 @@ public class Mario : MonoBehaviour {
             hit = Physics2D.Raycast(new Vector2(px + rodax, py), Vector3.down, 0.17f, layerMask);
             Debug.DrawLine(new Vector3(px + rodax, py, 0), new Vector3(px + rodax, py - 0.17f, 0), Color.red);
             //incrementa
-            rodax = rodax + 0.004f;
+            rodax = rodax + 0.01f;
             //Retorna se encontrou algo
             if (hit == true)
             {
@@ -129,12 +148,13 @@ public class Mario : MonoBehaviour {
                 }
                 if (hit.collider.tag == "Chao")
                 {
-                    
-                   
-                    
+
+
                     nochao = false;
-                    //Animar.SetBool("Pulo", false);
                     
+                    //forcapulo = 0;
+                    //Animar.SetBool("Pulo", false);
+
                 }
                 if (hit.collider.tag == "Casco")
                 {
@@ -157,20 +177,49 @@ public class Mario : MonoBehaviour {
         }
     }
 
-    
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "checkpoint1")
+        {
+            PlayerPrefs.SetString("checkpoint", "checkpoint1");
+            Debug.Log("CHEGOUSUHSUHDUHS");
+        }
 
-    void OnCollisionEnter2D(Collision2D col)
+        if (col.gameObject.tag == "bandeirafinal")
+        {
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControl>().NovaFase();
+
+        }
+
+    }
+
+        void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "Chao")
         {
-            if(nochao == true)
+            if (nochao == true)
             {
                 nochao = false;
                 forcapulo = 0;
             }
         }
-        
+
+        if (col.gameObject.tag == "Inimigo")
+        {
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControl>().GameOver();
+            
+
+        }
+        if (col.gameObject.tag == "Moeda")
+        {
+
+            Destroy(col.gameObject);
+           // Debug.Log("MOEDASSS");
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControl>().Pontuar(1);
+
+        }
+       
 
     }
 }

@@ -6,7 +6,7 @@ public class Turtle : MonoBehaviour {
 
     Rigidbody2D Corpo;
     SpriteRenderer Imagem;
-    float velocidade = 0.1f;
+    float velocidade = 0.3f;
 
 	// Use this for initialization
 	void Start () {
@@ -33,6 +33,13 @@ public class Turtle : MonoBehaviour {
             {
                 Imagem.flipX = true;
             }
+        }
+
+        if (col.gameObject.tag == "fogo")
+        {
+            Destroy(col.gameObject);
+            Destroy(this.gameObject);
+           
         }
     }
 
